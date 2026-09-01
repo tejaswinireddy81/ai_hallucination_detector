@@ -865,22 +865,8 @@ with tabs[4]:
 
     st.divider()
     
-    st.markdown("#### 🔒 Backend Environment Configuration (.env)")
-    env_key = os.getenv("GROQ_API_KEY", "")
-    if env_key and not env_key.startswith("your_"):
-        st.success("🟢 **Groq API Key Active**: Configured in `.env`. High-speed Llama 3.3 70B live model generation is active!")
-    else:
-        st.info("ℹ️ Running in **Multi-Source Hybrid Search Mode** (Wikipedia REST API + Web Search).")
-        with st.expander("🔑 Save Groq API Key to .env file (One-Time Setup)", expanded=False):
-            st.markdown("Paste your free Groq API key (get one free at [console.groq.com](https://console.groq.com/keys)) to activate Llama 3.3 70B AI generation:")
-            key_input = st.text_input("Enter GROQ_API_KEY:", type="password", placeholder="gsk_...")
-            if st.button("💾 Save Key to .env"):
-                if key_input.strip():
-                    llm.set_groq_api_key(key_input.strip())
-                    with open(".env", "w") as f:
-                        f.write(f"GROQ_API_KEY={key_input.strip()}\n")
-                    st.success("API Key saved to .env file and activated successfully!")
-                    st.rerun()
+    st.markdown("#### 🟢 System Operational Diagnostics")
+    st.success("🟢 **Guardrail Engine Operational**: Multi-Source Hybrid Search Mode (Wikipedia REST API + Web Search + Semantic RAG Store) is active!")
 
     st.divider()
     
