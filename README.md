@@ -1,11 +1,5 @@
 # 🛡️ Enterprise AI Hallucination Guardrail & Analytics Engine
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.30%2B-FF4B4B.svg?logo=streamlit&logoColor=white)](https://streamlit.io/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![Groq](https://img.shields.io/badge/Groq-Llama%203.3%2070B-orange.svg)](https://groq.com/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-
 An end-to-end **Enterprise AI Safety & Hallucination Guardrail Platform** that autonomously decomposes LLM responses into atomic claims, resolves coreferences, pre-retrieves multi-source evidence (Wikipedia REST API + Hybrid Web Search), runs parallel claim verification, and executes closed-loop self-correction to output **Fact-Guaranteed Answers**.
 
 ---
@@ -32,7 +26,7 @@ An end-to-end **Enterprise AI Safety & Hallucination Guardrail Platform** that a
        ┌─────────────────────────────────────────────────┼─────────────────────────────────────────────────┐
        ▼                                                 ▼                                                 ▼
 ┌───────────────────────────┐             ┌───────────────────────────┐             ┌───────────────────────────┐
-│ Groq API (Llama 3.3 70B)  │             │ Multi-Source Search       │             │ SQLite Database           │
+│ Llama 3.3 70B AI Engine   │             │ Multi-Source Search       │             │ SQLite Database           │
 │ - Atomic Claim Extraction │             │ - Wikipedia REST API      │             │ (storage.py)              │
 │ - Coreference Resolution  │             │ - DuckDuckGo Web Search   │             │ - Analytics & Audit Logs  │
 │ - Fact Grounding          │             │ - Entity Location Cleaner │             │                           │
@@ -68,8 +62,8 @@ $$\text{Risk (\%)} = \left( \frac{H}{N} \right) \times 100$$
 
 ### 1. Clone Repository & Setup Virtual Environment
 ```bash
-git clone https://github.com/your-username/hallucination-detector.git
-cd hallucination-detector
+git clone https://github.com/tejaswinireddy81/ai_hallucination_detector.git
+cd ai_hallucination_detector
 
 python -m venv venv
 # On Windows:
@@ -83,20 +77,13 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 3. Configure Environment Key (Optional)
-Create or edit `.env` in the root folder:
-```env
-GROQ_API_KEY=gsk_your_groq_api_key_here
-```
-*(Note: If no API key is provided, the engine automatically runs in Multi-Source Hybrid Search Fallback mode!)*
-
-### 4. Launch Streamlit Analytics Dashboard
+### 3. Launch Streamlit Analytics Dashboard
 ```bash
 python -m streamlit run app.py
 ```
 Open **[http://localhost:8501](http://localhost:8501)** in your browser.
 
-### 5. Launch FastAPI REST Server
+### 4. Launch FastAPI REST Server
 ```bash
 python server.py
 ```
@@ -138,8 +125,3 @@ If you use this system or architecture in academic research, please cite:
   year={2026}
 }
 ```
-
----
-
-## 📄 License
-Distributed under the **MIT License**. See `LICENSE` for more information.
