@@ -29,43 +29,26 @@ st.markdown("""
         font-family: 'Inter', system-ui, -apple-system, sans-serif;
     }
     
-    /* Header Container */
+    /* Header Container - Prominent Large Title */
     .hero-container {
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.95));
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 16px;
-        padding: 24px 30px;
-        margin-bottom: 24px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(12px);
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.98));
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        border-radius: 20px;
+        padding: 32px 30px;
+        margin-bottom: 28px;
+        text-align: center;
+        box-shadow: 0 12px 45px rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(14px);
     }
     .hero-title {
-        font-size: 2.2rem;
-        font-weight: 800;
-        background: linear-gradient(90deg, #38BDF8, #818CF8, #C084FC);
+        font-size: 3.2rem;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        background: linear-gradient(90deg, #38BDF8 0%, #818CF8 50%, #C084FC 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 8px;
-    }
-    .hero-subtitle {
-        color: #CBD5E1;
-        font-size: 1.08rem;
-        margin-bottom: 14px;
-        line-height: 1.5;
-    }
-    .chip-container {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-    .chip {
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 0.82rem;
-        font-weight: 600;
-        color: #E2E8F0;
+        margin: 0;
+        line-height: 1.25;
     }
 
     /* High-Readability Metric Cards */
@@ -317,18 +300,10 @@ with st.sidebar:
     st.caption("🚀 **AI Hallucination Guardrail v3.5 (RAG Enabled)**")
     st.caption("Enterprise Multi-Source Factual Verification Engine")
 
-# App Header
+# App Header - Large Prominent Title (No Subtitle, No Chips)
 st.markdown("""
 <div class="hero-container">
     <div class="hero-title">🛡️ Enterprise AI Hallucination Guardrail & RAG Engine</div>
-    <div class="hero-subtitle">Retrieval-Augmented Generation (RAG) from trusted sources, atomic claim extraction, coreference resolution, parallel verification, and factual audit logging.</div>
-    <div class="chip-container">
-        <span class="chip">📚 Retrieval-Augmented Generation (RAG)</span>
-        <span class="chip">🟢 Trusted Wikipedia & Doc Search</span>
-        <span class="chip">🔄 Autonomous Self-Correction</span>
-        <span class="chip">📊 SQLite Audit Storage</span>
-        <span class="chip">🔒 Zero UI Key Exposure</span>
-    </div>
 </div>
 """, unsafe_allow_html=True)
 
