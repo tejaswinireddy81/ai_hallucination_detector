@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Hallucination Detector</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="header">
+    <h2>🔍 Hallucination Detector</h2>
+    <p>Fact-check LLM responses with Wikipedia evidence</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-prompt-btn">Prompt Model</button>
+    <button class="tab-btn" id="tab-text-btn">Audit Text</button>
+  </div>
+
+  <div id="tab-prompt" class="tab-content active">
+    <label for="prompt-input">Give Prompt to Model:</label>
+    <textarea id="prompt-input" placeholder="e.g. Who invented the telephone and when?"></textarea>
+    <button id="run-prompt-btn" class="primary-btn">⚡ Generate & Verify</button>
+  </div>
+
+  <div id="tab-text" class="tab-content">
+    <label for="text-input">Paste or Selected Text:</label>
+    <textarea id="text-input" placeholder="e.g. Thomas Edison invented the telephone in 1876."></textarea>
+    <button id="run-text-btn" class="primary-btn">🔍 Audit Factual Claims</button>
+  </div>
+
+  <div id="loading" class="hidden">
+    <div class="spinner"></div>
+    <p id="loading-text">Contacting model & searching Wikipedia evidence...</p>
+  </div>
+
+  <div id="error-msg" class="hidden"></div>
+
+  <div id="results" class="hidden">
+    <div id="ai-response-box" class="info-box hidden">
+      <strong>🤖 Generated Answer:</strong>
+      <p id="ai-response-text"></p>
+    </div>
+
+    <div class="metrics">
+      <div class="metric"><span id="metric-total">0</span><br><small>Total</small></div>
+      <div class="metric green"><span id="metric-supported">0</span><br><small>Supported</small></div>
+      <div class="metric red"><span id="metric-hallucinated">0</span><br><small>Hallucinated</small></div>
+      <div class="metric yellow"><span id="metric-uncertain">0</span><br><small>Uncertain</small></div>
+    </div>
+
+    <div id="claims-list"></div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

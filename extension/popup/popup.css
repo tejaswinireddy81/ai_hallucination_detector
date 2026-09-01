@@ -1,0 +1,203 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  width: 360px;
+  margin: 0;
+  padding: 12px;
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+.header h2 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  color: #1a73e8;
+}
+
+.header p {
+  margin: 0 0 12px 0;
+  font-size: 12px;
+  color: #5f6368;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #dadce0;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 8px;
+  font-size: 13px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  color: #5f6368;
+  font-weight: 500;
+}
+
+.tab-btn.active {
+  border-bottom-color: #1a73e8;
+  color: #1a73e8;
+  font-weight: 600;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #3c4043;
+}
+
+textarea {
+  width: 100%;
+  height: 70px;
+  box-sizing: border-box;
+  border: 1px solid #dadce0;
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 12px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #1a73e8;
+}
+
+.primary-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.primary-btn:hover {
+  background-color: #1557b0;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#loading {
+  text-align: center;
+  margin: 16px 0;
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #1a73e8;
+  border-radius: 50%;
+  margin: 0 auto 8px auto;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#error-msg {
+  background-color: #fce8e6;
+  color: #c5221f;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  margin-top: 10px;
+}
+
+.info-box {
+  background-color: #e8f0fe;
+  border-left: 4px solid #1a73e8;
+  padding: 8px;
+  margin: 10px 0;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.info-box p {
+  margin: 4px 0 0 0;
+}
+
+.metrics {
+  display: flex;
+  justify-content: space-between;
+  margin: 12px 0;
+  background: white;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+.metric {
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.metric.green { color: #1e8e3e; }
+.metric.red { color: #d93025; }
+.metric.yellow { color: #b06000; }
+
+.claim-card {
+  background: white;
+  border: 1px solid #dadce0;
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.claim-title {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.badge.SUPPORTED { background: #e6f4ea; color: #137333; }
+.badge.HALLUCINATED { background: #fce8e6; color: #c5221f; }
+.badge.UNCERTAIN { background: #fef7e0; color: #b06000; }
+
+.claim-explanation {
+  font-size: 11px;
+  color: #3c4043;
+  margin-bottom: 4px;
+}
+
+.evidence-box {
+  font-size: 10px;
+  color: #5f6368;
+  background: #f1f3f4;
+  padding: 4px 6px;
+  border-radius: 4px;
+}
