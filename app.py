@@ -19,30 +19,37 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# High-Readability Enterprise Styling
+# Ultra-High Readability & Large Typography CSS
 st.markdown("""
 <style>
-    /* Main Background & Base Typography */
-    .stApp {
+    /* Global Base Styling & Large Typography */
+    html, body, [class*="css"], .stApp {
         background: linear-gradient(135deg, #0B0F19 0%, #111827 50%, #0F172A 100%);
-        color: #F8FAFC;
-        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        color: #F8FAFC !important;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+        font-size: 1.15rem !important;
     }
     
-    /* Header Container - Prominent Large Title */
+    /* Make all paragraphs, labels, and standard text significantly larger */
+    p, span, label, div {
+        font-size: 1.12rem !important;
+        color: #F8FAFC;
+    }
+
+    /* Header Container - Huge Prominent Title */
     .hero-container {
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.98));
-        border: 1px solid rgba(56, 189, 248, 0.25);
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.98));
+        border: 2px solid rgba(56, 189, 248, 0.35);
         border-radius: 20px;
-        padding: 32px 30px;
+        padding: 36px 30px;
         margin-bottom: 28px;
         text-align: center;
         box-shadow: 0 12px 45px rgba(0, 0, 0, 0.6);
         backdrop-filter: blur(14px);
     }
     .hero-title {
-        font-size: 3.2rem;
-        font-weight: 900;
+        font-size: 3.6rem !important;
+        font-weight: 900 !important;
         letter-spacing: -0.02em;
         background: linear-gradient(90deg, #38BDF8 0%, #818CF8 50%, #C084FC 100%);
         -webkit-background-clip: text;
@@ -51,187 +58,245 @@ st.markdown("""
         line-height: 1.25;
     }
 
-    /* High-Readability Metric Cards */
-    .metric-card {
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.75), rgba(15, 23, 42, 0.9));
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 14px;
-        padding: 18px;
-        text-align: center;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
-        backdrop-filter: blur(8px);
-        transition: transform 0.2s ease, border-color 0.2s ease;
+    /* Headings & Subheaders */
+    h1, h2, h3, .stSubheader {
+        font-size: 1.85rem !important;
+        font-weight: 800 !important;
+        color: #FFFFFF !important;
+        margin-top: 15px !important;
+        margin-bottom: 15px !important;
     }
-    .metric-card:hover {
-        transform: translateY(-2px);
-        border-color: rgba(99, 102, 241, 0.5);
+
+    /* Navigation Tabs - Large & Readable */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 12px;
+        background-color: rgba(15, 23, 42, 0.85);
+        padding: 10px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 10px;
+        color: #CBD5E1 !important;
+        font-weight: 700 !important;
+        padding: 14px 28px !important;
+        font-size: 1.2rem !important;
+    }
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, #4F46E5, #3B82F6) !important;
+        color: #FFFFFF !important;
+        font-weight: 800 !important;
+        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+    }
+
+    /* Form Inputs, Text Areas & Select Boxes */
+    .stTextInput input, .stTextArea textarea, .stSelectbox div[data-baseweb="select"] {
+        font-size: 1.25rem !important;
+        color: #FFFFFF !important;
+        background-color: rgba(15, 23, 42, 0.8) !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 10px !important;
+        padding: 12px 16px !important;
+    }
+    .stTextInput label, .stTextArea label, .stSelectbox label, .stSlider label {
+        font-size: 1.2rem !important;
+        font-weight: 700 !important;
+        color: #38BDF8 !important;
+        margin-bottom: 8px !important;
+    }
+
+    /* Buttons - Large & Prominent */
+    .stButton button {
+        font-size: 1.2rem !important;
+        font-weight: 800 !important;
+        padding: 12px 24px !important;
+        border-radius: 10px !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        transition: all 0.2s ease !important;
+    }
+    .stButton button[kind="primary"] {
+        background: linear-gradient(135deg, #2563EB, #4F46E5) !important;
+        color: #FFFFFF !important;
+        font-size: 1.35rem !important;
+        padding: 14px 28px !important;
+        box-shadow: 0 6px 25px rgba(37, 99, 235, 0.4) !important;
+    }
+
+    /* Sidebar Readability */
+    section[data-testid="stSidebar"] {
+        background-color: rgba(11, 15, 25, 0.98) !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+    }
+    section[data-testid="stSidebar"] .stMarkdown p, section[data-testid="stSidebar"] label {
+        font-size: 1.15rem !important;
+        color: #E2E8F0 !important;
+    }
+    .status-box {
+        background: rgba(16, 185, 129, 0.12);
+        border: 1.5px solid rgba(16, 185, 129, 0.4);
+        padding: 16px;
+        border-radius: 14px;
+        margin-bottom: 20px;
+    }
+    .status-indicator {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #34D399;
+        font-weight: 800;
+        font-size: 1.15rem !important;
+    }
+    .pulse-dot {
+        height: 12px;
+        width: 12px;
+        background-color: #10B981;
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 12px #10B981;
+    }
+
+    /* Metric Cards - Large Numbers */
+    .metric-card {
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95));
+        border: 1.5px solid rgba(255, 255, 255, 0.15);
+        border-radius: 16px;
+        padding: 22px;
+        text-align: center;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(8px);
     }
     .metric-title {
         color: #94A3B8;
-        font-size: 0.85rem;
-        font-weight: 700;
+        font-size: 1rem !important;
+        font-weight: 800 !important;
         text-transform: uppercase;
         letter-spacing: 0.06em;
-        margin-bottom: 6px;
+        margin-bottom: 8px;
     }
     .metric-val {
         color: #FFFFFF;
-        font-size: 2rem;
-        font-weight: 800;
+        font-size: 2.5rem !important;
+        font-weight: 900 !important;
     }
 
-    /* High-Contrast Claim Cards */
+    /* High-Contrast Claim Callout Cards */
     .claim-card-supported {
-        background: linear-gradient(135deg, rgba(6, 78, 59, 0.25), rgba(15, 23, 42, 0.8));
-        border-left: 6px solid #10B981;
-        border-top: 1px solid rgba(16, 185, 129, 0.2);
-        border-right: 1px solid rgba(16, 185, 129, 0.2);
-        border-bottom: 1px solid rgba(16, 185, 129, 0.2);
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 16px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        background: linear-gradient(135deg, rgba(6, 78, 59, 0.35), rgba(15, 23, 42, 0.9));
+        border-left: 8px solid #10B981;
+        border-top: 1.5px solid rgba(16, 185, 129, 0.3);
+        border-right: 1.5px solid rgba(16, 185, 129, 0.3);
+        border-bottom: 1.5px solid rgba(16, 185, 129, 0.3);
+        border-radius: 14px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 6px 25px rgba(0,0,0,0.4);
     }
     .claim-card-hallucinated {
-        background: linear-gradient(135deg, rgba(127, 29, 29, 0.25), rgba(15, 23, 42, 0.8));
-        border-left: 6px solid #EF4444;
-        border-top: 1px solid rgba(239, 68, 68, 0.2);
-        border-right: 1px solid rgba(239, 68, 68, 0.2);
-        border-bottom: 1px solid rgba(239, 68, 68, 0.2);
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 16px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        background: linear-gradient(135deg, rgba(127, 29, 29, 0.35), rgba(15, 23, 42, 0.9));
+        border-left: 8px solid #EF4444;
+        border-top: 1.5px solid rgba(239, 68, 68, 0.3);
+        border-right: 1.5px solid rgba(239, 68, 68, 0.3);
+        border-bottom: 1.5px solid rgba(239, 68, 68, 0.3);
+        border-radius: 14px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 6px 25px rgba(0,0,0,0.4);
     }
     .claim-card-uncertain {
-        background: linear-gradient(135deg, rgba(120, 53, 15, 0.25), rgba(15, 23, 42, 0.8));
-        border-left: 6px solid #F59E0B;
-        border-top: 1px solid rgba(245, 158, 11, 0.2);
-        border-right: 1px solid rgba(245, 158, 11, 0.2);
-        border-bottom: 1px solid rgba(245, 158, 11, 0.2);
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 16px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        background: linear-gradient(135deg, rgba(120, 53, 15, 0.35), rgba(15, 23, 42, 0.9));
+        border-left: 8px solid #F59E0B;
+        border-top: 1.5px solid rgba(245, 158, 11, 0.3);
+        border-right: 1.5px solid rgba(245, 158, 11, 0.3);
+        border-bottom: 1.5px solid rgba(245, 158, 11, 0.3);
+        border-radius: 14px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 6px 25px rgba(0,0,0,0.4);
     }
 
     .claim-header {
-        font-size: 1.15rem;
-        font-weight: 700;
-        color: #FFFFFF;
-        margin-bottom: 10px;
+        font-size: 1.4rem !important;
+        font-weight: 800 !important;
+        color: #FFFFFF !important;
+        margin-bottom: 12px;
+        line-height: 1.4;
     }
     .claim-meta {
-        font-size: 0.88rem;
-        color: #CBD5E1;
-        margin-bottom: 10px;
+        font-size: 1.1rem !important;
+        color: #CBD5E1 !important;
+        margin-bottom: 12px;
     }
     .claim-explanation {
-        background: rgba(15, 23, 42, 0.6);
-        border-radius: 8px;
-        padding: 12px 16px;
-        color: #E2E8F0;
-        font-size: 0.98rem;
-        line-height: 1.6;
-        margin-bottom: 10px;
+        background: rgba(15, 23, 42, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 16px;
+        color: #F1F5F9 !important;
+        font-size: 1.15rem !important;
+        line-height: 1.65;
+        margin-bottom: 12px;
     }
     .claim-quote {
-        background: rgba(30, 41, 59, 0.7);
-        border-left: 3px solid #38BDF8;
-        border-radius: 6px;
-        padding: 10px 14px;
-        color: #93C5FD;
-        font-size: 0.93rem;
+        background: rgba(30, 41, 59, 0.85);
+        border-left: 4px solid #38BDF8;
+        border-radius: 8px;
+        padding: 14px 18px;
+        color: #93C5FD !important;
+        font-size: 1.1rem !important;
         font-style: italic;
-        margin-bottom: 10px;
+        margin-bottom: 12px;
     }
 
     /* Badges */
     .badge-supported {
         background-color: #064E3B;
-        color: #34D399;
-        padding: 5px 14px;
+        color: #34D399 !important;
+        padding: 6px 16px;
         border-radius: 20px;
-        font-weight: 700;
-        font-size: 0.85rem;
-        border: 1px solid #059669;
+        font-weight: 800;
+        font-size: 1rem !important;
+        border: 1.5px solid #059669;
     }
     .badge-hallucinated {
         background-color: #7F1D1D;
-        color: #FCA5A5;
-        padding: 5px 14px;
+        color: #FCA5A5 !important;
+        padding: 6px 16px;
         border-radius: 20px;
-        font-weight: 700;
-        font-size: 0.85rem;
-        border: 1px solid #DC2626;
+        font-weight: 800;
+        font-size: 1rem !important;
+        border: 1.5px solid #DC2626;
     }
     .badge-uncertain {
         background-color: #78350F;
-        color: #FCD34D;
-        padding: 5px 14px;
+        color: #FCD34D !important;
+        padding: 6px 16px;
         border-radius: 20px;
-        font-weight: 700;
-        font-size: 0.85rem;
-        border: 1px solid #D97706;
+        font-weight: 800;
+        font-size: 1rem !important;
+        border: 1.5px solid #D97706;
     }
 
     /* Glass Answer Box */
     .glass-answer-box {
-        background: linear-gradient(135deg, rgba(6, 78, 59, 0.2), rgba(15, 23, 42, 0.85));
-        border: 1px solid rgba(16, 185, 129, 0.4);
+        background: linear-gradient(135deg, rgba(6, 78, 59, 0.3), rgba(15, 23, 42, 0.9));
+        border: 2px solid rgba(16, 185, 129, 0.5);
+        border-radius: 16px;
+        padding: 28px;
+        margin-bottom: 28px;
+        color: #FFFFFF !important;
+        font-size: 1.3rem !important;
+        line-height: 1.85;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
+    }
+    .glass-box {
+        background: rgba(30, 41, 59, 0.6);
+        border: 1.5px solid rgba(255, 255, 255, 0.15);
         border-radius: 14px;
         padding: 24px;
-        margin-bottom: 24px;
-        color: #F8FAFC;
-        font-size: 1.15rem;
-        line-height: 1.8;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-    }
-    
-    /* Sidebar Status Box */
-    .status-box {
-        background: rgba(16, 185, 129, 0.08);
-        border: 1px solid rgba(16, 185, 129, 0.3);
-        padding: 12px 16px;
-        border-radius: 12px;
-        margin-bottom: 18px;
-    }
-    .status-indicator {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        color: #34D399;
-        font-weight: 700;
-        font-size: 0.88rem;
-    }
-    .pulse-dot {
-        height: 9px;
-        width: 9px;
-        background-color: #10B981;
-        border-radius: 50%;
-        display: inline-block;
-        box-shadow: 0 0 10px #10B981;
-    }
-    
-    /* Custom Tab Styling */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-        background-color: rgba(15, 23, 42, 0.7);
-        padding: 8px;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    .stTabs [data-baseweb="tab"] {
-        border-radius: 8px;
-        color: #94A3B8;
-        font-weight: 600;
-        padding: 10px 20px;
-        font-size: 0.95rem;
-    }
-    .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #4F46E5, #3B82F6) !important;
-        color: #FFFFFF !important;
-        font-weight: 700 !important;
+        margin-bottom: 20px;
+        color: #F8FAFC !important;
+        font-size: 1.2rem !important;
+        line-height: 1.75;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -242,8 +307,8 @@ if "user_prompt_text" not in st.session_state:
 
 # Sidebar Controls
 with st.sidebar:
-    st.image("https://img.icons8.com/isometric-line/100/security-checked.png", width=60)
-    st.title("🛡️ Engine Controls")
+    st.image("https://img.icons8.com/isometric-line/100/security-checked.png", width=70)
+    st.markdown("<h2 style='font-size: 1.8rem !important; margin-top:0;'>🛡️ Engine Controls</h2>", unsafe_allow_html=True)
     st.markdown("---")
     
     # Engine Active Status
@@ -253,7 +318,7 @@ with st.sidebar:
             <span class="pulse-dot"></span>
             Guardrail Engine Active
         </div>
-        <div style="color: #94A3B8; font-size: 0.78rem; margin-top: 5px; line-height: 1.4;">
+        <div style="color: #CBD5E1; font-size: 0.95rem !important; margin-top: 6px; line-height: 1.4;">
             RAG Pre-Retrieval & Real-Time Fact Verification Operational
         </div>
     </div>
@@ -287,20 +352,21 @@ with st.sidebar:
     st.markdown("---")
     
     ingested_count = len(GLOBAL_RAG_STORE.documents)
-    st.markdown(f"📚 **Ingested RAG Docs:** `{ingested_count}`")
-    st.markdown(f"🧩 **Total RAG Chunks:** `{len(GLOBAL_RAG_STORE.chunks)}`")
+    st.markdown(f"📚 **Ingested RAG Docs:** <b style='font-size: 1.2rem; color: #38BDF8;'>{ingested_count}</b>", unsafe_allow_html=True)
+    st.markdown(f"🧩 **Total RAG Chunks:** <b style='font-size: 1.2rem; color: #38BDF8;'>{len(GLOBAL_RAG_STORE.chunks)}</b>", unsafe_allow_html=True)
     
     try:
         side_stats = storage.get_analytics_stats()
-        st.markdown(f"📊 **Total Audits Logged:** `{side_stats['total_runs']}`")
-        st.markdown(f"🛡️ **Avg Trust Score:** `{round(side_stats['avg_trust_index'], 1)}%`")
+        st.markdown(f"📊 **Total Audits Logged:** <b style='font-size: 1.2rem; color: #34D399;'>{side_stats['total_runs']}</b>", unsafe_allow_html=True)
+        st.markdown(f"🛡️ **Avg Trust Score:** <b style='font-size: 1.2rem; color: #34D399;'>{round(side_stats['avg_trust_index'], 1)}%</b>", unsafe_allow_html=True)
     except Exception:
         pass
 
+    st.markdown("<br>", unsafe_allow_html=True)
     st.caption("🚀 **AI Hallucination Guardrail v3.5 (RAG Enabled)**")
     st.caption("Enterprise Multi-Source Factual Verification Engine")
 
-# App Header - Large Prominent Title (No Subtitle, No Chips)
+# App Header - Huge Prominent Title
 st.markdown("""
 <div class="hero-container">
     <div class="hero-title">🛡️ Enterprise AI Hallucination Guardrail & RAG Engine</div>
@@ -321,7 +387,7 @@ def render_agent_trace(report):
     if trace:
         with st.expander("🤖 Autonomous Agent Execution Trace (RAG Retrieval & Step Log)", expanded=False):
             for step in trace:
-                st.markdown(f"`{step}`")
+                st.markdown(f"<code style='font-size: 1.1rem;'>{step}</code>", unsafe_allow_html=True)
 
 def render_verification_summary(report):
     c1, c2, c3, c4, c5 = st.columns(5)
@@ -341,7 +407,8 @@ def render_verification_summary(report):
         st.markdown(f"""
         <div class="metric-card">
             <div class="metric-title">Hallucination Risk</div>
-            <div class="metric-val" style="color: {'#FCA5A5' if risk_score >= 40 else ('#FCD34D' if risk_score >= 15 else '#34D399')};">{risk_score}% ({risk_lvl})</div>
+            <div class="metric-val" style="color: {'#FCA5A5' if risk_score >= 40 else ('#FCD34D' if risk_score >= 15 else '#34D399')};">{risk_score}%</div>
+            <div style="color: #94A3B8; font-size: 0.95rem; font-weight: 700;">{risk_lvl} RISK</div>
         </div>
         """, unsafe_allow_html=True)
     with c3:
@@ -382,18 +449,18 @@ def render_rag_inspector(report):
                 src_type = item.get("source_type", "Trusted Source")
                 title_short = item.get('title', 'Knowledge Chunk').replace("Wikipedia: ", "")
                 st.markdown(f"""
-                <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 16px; margin-bottom: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                        <span style="color: #38BDF8; font-weight: 800; font-size: 0.85rem;">Rank #{idx+1}</span>
-                        <span style="background: rgba(16, 185, 129, 0.25); color: #34D399; padding: 3px 10px; border-radius: 12px; font-weight: 700; font-size: 0.8rem; border: 1px solid #059669;">Score: {sim_score}%</span>
+                <div style="background: rgba(30, 41, 59, 0.85); border: 1.5px solid rgba(56, 189, 248, 0.4); border-radius: 14px; padding: 18px; margin-bottom: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="color: #38BDF8; font-weight: 800; font-size: 1rem;">Rank #{idx+1}</span>
+                        <span style="background: rgba(16, 185, 129, 0.3); color: #34D399; padding: 4px 12px; border-radius: 14px; font-weight: 800; font-size: 0.95rem; border: 1px solid #059669;">Score: {sim_score}%</span>
                     </div>
-                    <div style="color: #6EE7B7; font-size: 0.78rem; font-weight: 700; margin-bottom: 6px;">{src_type}</div>
-                    <div style="color: #FFFFFF; font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{title_short}">{title_short}</div>
-                    <div style="color: #CBD5E1; font-size: 0.82rem; line-height: 1.5; max-height: 90px; overflow-y: auto;">"{item.get('snippet', '')[:160]}..."</div>
+                    <div style="color: #6EE7B7; font-size: 0.9rem; font-weight: 700; margin-bottom: 8px;">{src_type}</div>
+                    <div style="color: #FFFFFF; font-weight: 800; font-size: 1.1rem; margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{title_short}">{title_short}</div>
+                    <div style="color: #E2E8F0; font-size: 0.98rem; line-height: 1.55; max-height: 110px; overflow-y: auto;">"{item.get('snippet', '')[:180]}..."</div>
                 </div>
                 """, unsafe_allow_html=True)
                 if item.get("url") and not str(item.get("url")).startswith("#"):
-                    st.markdown(f"🔗 [View Source Document]({item['url']})")
+                    st.markdown(f"🔗 <a href='{item['url']}' target='_blank' style='font-size: 1.05rem; font-weight: 700; color: #38BDF8;'>View Source Document</a>", unsafe_allow_html=True)
         st.divider()
 
 def render_claim_results(report, filter_verdict=None):
@@ -421,20 +488,20 @@ def render_claim_results(report, filter_verdict=None):
             
         st.markdown(f"""
         <div class="{card_class}">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <span style="color: #94A3B8; font-weight: 700; font-size: 0.85rem; uppercase;">Atomic Claim #{i}</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="color: #94A3B8; font-weight: 800; font-size: 1rem; text-transform: uppercase;">Atomic Claim #{i}</span>
                 <div>{badge}</div>
             </div>
             <div class="claim-header">"{res['claim']}"</div>
             <div class="claim-meta">
-                <b>Confidence:</b> <code style="color: #38BDF8;">{res['confidence']}</code> &nbsp;|&nbsp; 
-                <b>Target Search Query:</b> <code style="color: #C084FC;">{res.get('search_query', 'N/A')}</code>
+                <b>Confidence:</b> <code style="color: #38BDF8; font-size: 1.05rem;">{res['confidence']}</code> &nbsp;|&nbsp; 
+                <b>Target Search Query:</b> <code style="color: #C084FC; font-size: 1.05rem;">{res.get('search_query', 'N/A')}</code>
             </div>
             <div class="claim-explanation">
                 <b>💬 Factual Explanation:</b> {res['explanation']}
             </div>
             {f'<div class="claim-quote"><b>📖 Verbatim RAG Quote:</b> "{res["quoted_evidence"]}"</div>' if res.get("quoted_evidence") and res["quoted_evidence"] != "None" else ''}
-            {f'<div style="margin-top: 8px;">🔗 <b>Source:</b> <a href="{res["source_url"]}" target="_blank" style="color: #38BDF8; font-weight: 600;">{res.get("source_title", "View Article")}</a></div>' if res.get("source_url") else ''}
+            {f'<div style="margin-top: 10px;">🔗 <b>Source:</b> <a href="{res["source_url"]}" target="_blank" style="color: #38BDF8; font-size: 1.1rem; font-weight: 700;">{res.get("source_title", "View Article")}</a></div>' if res.get("source_url") else ''}
         </div>
         """, unsafe_allow_html=True)
 
@@ -443,7 +510,7 @@ def render_claim_results(report, filter_verdict=None):
 # ==========================================
 with tabs[0]:
     st.subheader("🤖 Autonomous RAG Agent Prompt Answering & Fact Verification")
-    st.markdown("Enter any prompt or select a sample question to trigger RAG evidence retrieval from trusted sources (Wikipedia, Official Docs):")
+    st.markdown("Enter any prompt or select a sample question to trigger RAG evidence retrieval from trusted sources:")
     
     # Quick Sample Pills
     st.markdown("**⚡ Quick Sample Prompts:**")
@@ -461,6 +528,7 @@ with tabs[0]:
         if st.button("🧬 Physics & Relativity", use_container_width=True):
             st.session_state.user_prompt_text = "Who discovered the law of the photoelectric effect and won the Nobel Prize for it?"
 
+    st.markdown("<br>", unsafe_allow_html=True)
     user_prompt = st.text_input(
         "Enter prompt for RAG Fact-Checking Agent:", 
         value=st.session_state.user_prompt_text,
@@ -485,7 +553,7 @@ with tabs[0]:
                     st.markdown("### ✨ Grounded & Verified Output")
                     st.markdown(f"""
                     <div class="glass-answer-box">
-                        <div style="color: #34D399; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; margin-bottom: 8px;">
+                        <div style="color: #34D399; font-weight: 800; font-size: 1.1rem; text-transform: uppercase; margin-bottom: 12px;">
                             🟢 Fact-Grounded Verified Answer
                         </div>
                         {report.get("verified_answer", report.get("corrected_text", report.get("text")))}
@@ -550,7 +618,7 @@ with tabs[1]:
                         st.markdown("### ✨ Grounded & Verified Output")
                         st.markdown(f"""
                         <div class="glass-answer-box">
-                            <div style="color: #34D399; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; margin-bottom: 8px;">
+                            <div style="color: #34D399; font-weight: 800; font-size: 1.1rem; text-transform: uppercase; margin-bottom: 12px;">
                                 🟢 Agent Verified Corrected Version
                             </div>
                             {report.get("verified_answer", report.get("corrected_text", report.get("text")))}
@@ -728,32 +796,32 @@ with tabs[4]:
         st.markdown("""
         <div class="metric-card">
             <div class="metric-title">RAG Engine</div>
-            <div class="metric-val" style="color: #34D399; font-size: 1.2rem;">RAG Active</div>
-            <div style="color: #94A3B8; font-size: 0.78rem; margin-top: 4px;">Semantic Chunks + Wiki</div>
+            <div class="metric-val" style="color: #34D399; font-size: 1.4rem !important;">RAG Active</div>
+            <div style="color: #94A3B8; font-size: 0.95rem; margin-top: 4px;">Semantic Chunks + Wiki</div>
         </div>
         """, unsafe_allow_html=True)
     with d2:
         st.markdown("""
         <div class="metric-card">
             <div class="metric-title">Database Storage</div>
-            <div class="metric-val" style="color: #38BDF8; font-size: 1.2rem;">SQLite Active</div>
-            <div style="color: #94A3B8; font-size: 0.78rem; margin-top: 4px;">hallucinations.db</div>
+            <div class="metric-val" style="color: #38BDF8; font-size: 1.4rem !important;">SQLite Active</div>
+            <div style="color: #94A3B8; font-size: 0.95rem; margin-top: 4px;">hallucinations.db</div>
         </div>
         """, unsafe_allow_html=True)
     with d3:
         st.markdown("""
         <div class="metric-card">
             <div class="metric-title">Coreference Engine</div>
-            <div class="metric-val" style="color: #C084FC; font-size: 1.2rem;">Atomic Resolver</div>
-            <div style="color: #94A3B8; font-size: 0.78rem; margin-top: 4px;">Claim Extraction v3</div>
+            <div class="metric-val" style="color: #C084FC; font-size: 1.4rem !important;">Atomic Resolver</div>
+            <div style="color: #94A3B8; font-size: 0.95rem; margin-top: 4px;">Claim Extraction v3</div>
         </div>
         """, unsafe_allow_html=True)
     with d4:
         st.markdown("""
         <div class="metric-card">
             <div class="metric-title">Parallel Workers</div>
-            <div class="metric-val" style="color: #FCD34D; font-size: 1.2rem;">Multi-Threaded</div>
-            <div style="color: #94A3B8; font-size: 0.78rem; margin-top: 4px;">Concurrent Pool</div>
+            <div class="metric-val" style="color: #FCD34D; font-size: 1.4rem !important;">Multi-Threaded</div>
+            <div style="color: #94A3B8; font-size: 0.95rem; margin-top: 4px;">Concurrent Pool</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -766,7 +834,7 @@ with tabs[4]:
     else:
         st.info("ℹ️ Running in **Multi-Source Hybrid Search Mode** (Wikipedia REST API + Web Search).")
         with st.expander("🔑 Save Groq API Key to .env file (One-Time Setup)", expanded=False):
-            st.markdown("Paste your free Groq API key (get one free at [console.groq.com](https://console.groq.com/keys)) to activate Llama 3.3 70B AI generation:")
+            st.markdown("Paste your free Groq API key (get one free at [consolegroq.com](https://console.groq.com/keys)) to activate Llama 3.3 70B AI generation:")
             key_input = st.text_input("Enter GROQ_API_KEY:", type="password", placeholder="gsk_...")
             if st.button("💾 Save Key to .env"):
                 if key_input.strip():
