@@ -3,6 +3,7 @@ import re
 from concurrent.futures import ThreadPoolExecutor
 from llm import ask_llm, extract_claims, generate_response, generate_grounded_response, generate_search_query, detect_prompt_intent
 from search_engine import get_rag_evidence, get_hybrid_evidence, GLOBAL_RAG_STORE
+from wikipedia import clean_question_query
 import storage
 
 def find_best_verbatim_quote(claim: str, passage_snippet: str) -> str:
@@ -152,15 +153,18 @@ Return strictly valid JSON only:
     }
 
 def process_single_claim(args: tuple) -> dict:
-    """Helper to verify one claim in parallel thread."""
+    """Helper to verify one claim in parallel thread with target entity fallback."""
     claim, search_engine = args
     search_query = generate_search_query(claim)
     evidence_passages = get_rag_evidence(search_query, max_results=4, engine=search_engine)
     
-    if not evidence_passages:
-        evidence_passages = get_rag_evidence(claim, max_results=4, engine=search_engine)
+    clean_target = clean_question_query(claim)
+    if not evidence_passages or (clean_target and clean_target.lower() not in search_query.lower()):
+        target_evidence = get_rag_evidence(clean_target if clean_target else claim, max_results=4, engine=search_engine)
+        if target_evidence:
+            evidence_passages = target_evidence + [ep for ep in evidence_passages if ep not in target_evidence]
         
-    evaluation = verify_claim(claim, evidence_passages)
+    evaluation = verify_claim(claim, evidence_passages[:4])
     
     return {
         "claim": claim,
@@ -227,16 +231,6 @@ def generate_highlighted_html(text: str, results: list[dict]) -> str:
     return html
 
 def run_autonomous_agent(prompt_or_text: str, input_type: str = "prompt", search_engine: str = "hybrid", model_name: str = "Llama 3.3 (Groq)", save_to_db: bool = True) -> dict:
-    """
-    Full RAG Autonomous Agent Workflow:
-    1. Intent detection & planning.
-    2. RAG Evidence Pre-Retrieval (Wikipedia REST API + Ingested Docs + Web).
-    3. RAG Context-Grounded Answer Generation.
-    4. Atomic claim extraction & coreference resolution.
-    5. Parallel multi-source claim verification.
-    6. Agentic self-correction loop.
-    7. Factual guaranteed answer output & agent execution trace log.
-    """
     agent_trace = []
     agent_trace.append(f"🧠 [AGENT STEP 1] Analyzing input intent (Type: {input_type.upper()})...")
     
