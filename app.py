@@ -4,8 +4,10 @@ import plotly.express as px
 import plotly.graph_objects as go
 import json
 import os
+import io
 import time
 from datetime import datetime
+import pypdf
 import verifier
 import storage
 import llm
@@ -18,6 +20,31 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Helper function to extract text from PDF, TXT, MD, CSV, JSON
+def extract_text_from_file(uploaded_file) -> str:
+    """Extract clean text content from uploaded .pdf, .txt, .md, .json, or .csv files."""
+    if uploaded_file is None:
+        return ""
+    filename = uploaded_file.name.lower()
+    if filename.endswith(".pdf"):
+        try:
+            pdf_reader = pypdf.PdfReader(io.BytesIO(uploaded_file.read()))
+            text_pages = []
+            for i, page in enumerate(pdf_reader.pages):
+                txt = page.extract_text()
+                if txt:
+                    text_pages.append(txt.strip())
+            return "\n\n".join(text_pages)
+        except Exception as e:
+            st.error(f"Error parsing PDF document: {e}")
+            return ""
+    else:
+        try:
+            return uploaded_file.read().decode("utf-8", errors="ignore")
+        except Exception as e:
+            st.error(f"Error reading text document: {e}")
+            return ""
 
 # Ultra-High Readability & Custom Sidebar Styling
 st.markdown("""
@@ -568,32 +595,41 @@ with tabs[0]:
                     st.error(f"Error executing guardrail request: {e}")
 
 # ==========================================
-# TAB 2: 📄 DOCUMENT & CUSTOM RAG AUDIT
+# TAB 2: 📄 DOCUMENT & CUSTOM RAG AUDIT (PDF Supported!)
 # ==========================================
 with tabs[1]:
-    st.subheader("Audit Factual Claims against Custom Trusted Knowledge Documents (RAG)")
+    st.subheader("Audit Factual Claims against Custom Trusted Knowledge Documents (PDF Supported 📄)")
     
     # Custom RAG Document Ingestion Section
-    with st.expander("📥 Upload / Ingest Custom Trusted Documents into RAG Store", expanded=False):
-        st.markdown("Ingest custom trusted documentation (.txt, .json, .csv, .md) to create an in-memory RAG vector index:")
-        doc_name_in = st.text_input("Trusted Document Title:", value="Official Product Documentation")
-        doc_text_in = st.text_area("Paste Trusted Document Content:", height=140, placeholder="Paste official reference documentation here...")
+    with st.expander("📥 Upload / Ingest Custom Trusted Documents (.pdf, .txt, .md, .json, .csv) into RAG Store", expanded=False):
+        st.markdown("Ingest custom trusted reference documentation (**PDF**, **TXT**, **MD**, **JSON**, **CSV**) to create an in-memory RAG vector index:")
+        
+        uploaded_rag_file = st.file_uploader("Upload PDF or Text File to Ingest into RAG Store:", type=["pdf", "txt", "md", "json", "csv"], key="rag_file_ingest")
+        doc_name_in = st.text_input("Trusted Document Title:", value="Official Knowledge Base")
+        doc_text_in = st.text_area("Or Paste Trusted Document Content:", height=120, placeholder="Paste official reference documentation here...")
         
         c_ing1, c_ing2 = st.columns([1, 3])
         with c_ing1:
-            if st.button("⚡ Ingest into RAG Store", type="primary"):
-                if doc_text_in.strip():
-                    added = GLOBAL_RAG_STORE.ingest_document(doc_text_in.strip(), doc_name=doc_name_in.strip())
-                    st.success(f"Successfully indexed **{added}** semantic RAG chunks into trusted knowledge store!")
+            if st.button("⚡ Ingest Document into RAG Store", type="primary"):
+                content_to_ingest = ""
+                if uploaded_rag_file is not None:
+                    content_to_ingest = extract_text_from_file(uploaded_rag_file)
+                    doc_name_in = uploaded_rag_file.name
+                elif doc_text_in.strip():
+                    content_to_ingest = doc_text_in.strip()
+                    
+                if content_to_ingest.strip():
+                    added = GLOBAL_RAG_STORE.ingest_document(content_to_ingest, doc_name=doc_name_in)
+                    st.success(f"Successfully indexed **{added}** semantic RAG chunks from '{doc_name_in}' into trusted knowledge store!")
                 else:
-                    st.warning("Please paste document content to ingest.")
+                    st.warning("Please upload a file or paste document text to ingest.")
         with c_ing2:
             if st.button("🗑️ Clear Ingested RAG Documents"):
                 GLOBAL_RAG_STORE.clear()
                 st.info("Cleared all custom ingested RAG documents.")
 
     st.markdown("---")
-    audit_mode = st.radio("Choose Audit Input Mode", ["Single Text Block", "Batch File Upload (.txt, .json, .csv)", "Load Preset Sample Document"], horizontal=True)
+    audit_mode = st.radio("Choose Audit Input Mode", ["Single Text Block", "Batch File Upload (.pdf, .txt, .json, .csv, .md)", "Load Preset Sample Document"], horizontal=True)
     
     if audit_mode == "Single Text Block":
         text_input = st.text_area(
@@ -632,26 +668,29 @@ with tabs[1]:
                     except Exception as e:
                         st.error(f"Error auditing text: {e}")
 
-    elif audit_mode == "Batch File Upload (.txt, .json, .csv)":
-        uploaded_file = st.file_uploader("Upload document for batch audit", type=["txt", "json", "csv"])
+    elif audit_mode == "Batch File Upload (.pdf, .txt, .json, .csv, .md)":
+        uploaded_file = st.file_uploader("Upload PDF, TXT, JSON, or CSV document for batch audit", type=["pdf", "txt", "json", "csv", "md"])
         if uploaded_file is not None:
-            content = uploaded_file.read().decode("utf-8")
-            st.info(f"File uploaded: **{uploaded_file.name}** ({len(content)} characters)")
+            content = extract_text_from_file(uploaded_file)
+            st.info(f"📄 File uploaded: **{uploaded_file.name}** (Extracted {len(content)} characters)")
             
             if st.button("⚡ Audit Uploaded Document", type="primary"):
-                with st.spinner("Running batch verification pipeline..."):
-                    report = verifier.verify_text(content, search_engine=search_mode, model_name=model_choice, source_type="file")
-                    render_verification_summary(report)
-                    render_rag_inspector(report)
-                    render_claim_results(report)
-                    
-                    report_bytes = json.dumps(report, indent=2).encode('utf-8')
-                    st.download_button(
-                        label="📥 Download Audit Report (JSON)",
-                        data=report_bytes,
-                        file_name=f"audit_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
-                        mime="application/json"
-                    )
+                if not content.strip():
+                    st.error("No readable text could be extracted from the uploaded document.")
+                else:
+                    with st.spinner("Running batch verification pipeline..."):
+                        report = verifier.verify_text(content, search_engine=search_mode, model_name=model_choice, source_type="file")
+                        render_verification_summary(report)
+                        render_rag_inspector(report)
+                        render_claim_results(report)
+                        
+                        report_bytes = json.dumps(report, indent=2).encode('utf-8')
+                        st.download_button(
+                            label="📥 Download Audit Report (JSON)",
+                            data=report_bytes,
+                            file_name=f"audit_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                            mime="application/json"
+                        )
 
     else:
         st.markdown("#### Load Preset Sample Factual Test Documents")
