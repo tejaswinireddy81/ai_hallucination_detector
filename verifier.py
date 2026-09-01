@@ -2,9 +2,8 @@ import json
 import re
 from concurrent.futures import ThreadPoolExecutor
 from llm import ask_llm, extract_claims, generate_response, generate_grounded_response, generate_search_query, detect_prompt_intent
-from search_engine import get_hybrid_evidence
+from search_engine import get_rag_evidence, get_hybrid_evidence, GLOBAL_RAG_STORE
 import storage
-
 
 def find_best_verbatim_quote(claim: str, passage_snippet: str) -> str:
     """Find a clean verbatim sentence from snippet that matches the claim context."""
@@ -156,10 +155,10 @@ def process_single_claim(args: tuple) -> dict:
     """Helper to verify one claim in parallel thread."""
     claim, search_engine = args
     search_query = generate_search_query(claim)
-    evidence_passages = get_hybrid_evidence(search_query, max_results=4, engine=search_engine)
+    evidence_passages = get_rag_evidence(search_query, max_results=4, engine=search_engine)
     
     if not evidence_passages:
-        evidence_passages = get_hybrid_evidence(claim, max_results=4, engine=search_engine)
+        evidence_passages = get_rag_evidence(claim, max_results=4, engine=search_engine)
         
     evaluation = verify_claim(claim, evidence_passages)
     
@@ -175,9 +174,7 @@ def process_single_claim(args: tuple) -> dict:
     }
 
 def correct_hallucinations(text: str, results: list[dict]) -> str:
-    """
-    Generate an AI fact-corrected version of the text, replacing hallucinated statements with evidence-backed facts.
-    """
+    """Generate an AI fact-corrected version of the text based on claim results."""
     hallucinated_items = [r for r in results if r["verdict"] == "HALLUCINATED"]
     if not hallucinated_items:
         return text
@@ -204,32 +201,26 @@ INSTRUCTIONS:
     return corrected.strip()
 
 def generate_highlighted_html(text: str, results: list[dict]) -> str:
-    """
-    Generate clean HTML rendering of the text with claim-level colored badges and highlights.
-    """
+    """Generate clean HTML rendering of the text with claim-level colored badges and highlights."""
     html = text
     for r in results:
         verdict = r["verdict"]
         claim = r["claim"]
         if verdict == "SUPPORTED":
-            color = "#10B981" # Emerald Green
             bg = "#D1FAE5"
             border = "#059669"
             badge = "🟢 SUPPORTED"
         elif verdict == "HALLUCINATED":
-            color = "#EF4444" # Red
             bg = "#FEE2E2"
             border = "#DC2626"
             badge = "🔴 HALLUCINATED"
         else:
-            color = "#F59E0B" # Amber Yellow
             bg = "#FEF3C7"
             border = "#D97706"
             badge = "🟡 UNCERTAIN"
             
         highlight_span = f'<span style="background-color: {bg}; border-bottom: 2px solid {border}; padding: 2px 4px; border-radius: 4px; color: #1F2937; font-weight: 500;" title="{badge}: {r["explanation"]}">{claim}</span>'
         
-        # Try replacing claim in text if present
         if claim in html:
             html = html.replace(claim, highlight_span)
             
@@ -237,13 +228,13 @@ def generate_highlighted_html(text: str, results: list[dict]) -> str:
 
 def run_autonomous_agent(prompt_or_text: str, input_type: str = "prompt", search_engine: str = "hybrid", model_name: str = "Llama 3.3 (Groq)", save_to_db: bool = True) -> dict:
     """
-    Full Autonomous Agent workflow:
+    Full RAG Autonomous Agent Workflow:
     1. Intent detection & planning.
-    2. Multi-source evidence retrieval & context grounding.
-    3. Fact-grounded answer generation.
+    2. RAG Evidence Pre-Retrieval (Wikipedia REST API + Ingested Docs + Web).
+    3. RAG Context-Grounded Answer Generation.
     4. Atomic claim extraction & coreference resolution.
     5. Parallel multi-source claim verification.
-    6. Agentic self-correction loop (re-query & self-correct hallucinations).
+    6. Agentic self-correction loop.
     7. Factual guaranteed answer output & agent execution trace log.
     """
     agent_trace = []
@@ -268,25 +259,28 @@ def run_autonomous_agent(prompt_or_text: str, input_type: str = "prompt", search
                 "risk_level": "LOW",
                 "highlighted_html": generated_text,
                 "corrected_text": generated_text,
-                "agent_trace": agent_trace
+                "agent_trace": agent_trace,
+                "rag_evidence": []
             }
             if save_to_db:
                 storage.save_verification_run(report, source_type=input_type, prompt=prompt_or_text, model_used=model_name)
             return report
 
-    # Step 2: Multi-source pre-retrieval
-    agent_trace.append("🔎 [AGENT STEP 2] Querying multi-source search engines (Wikipedia + Web)...")
+    # Step 2: RAG Multi-Source Pre-Retrieval
+    agent_trace.append("📚 [RAG STEP 2] Performing Retrieval-Augmented Generation (RAG) pre-retrieval from trusted knowledge bases...")
+    context_evidence = []
     if input_type == "prompt":
         search_q = prompt_or_text[:100]
-        context_evidence = get_hybrid_evidence(search_q, max_results=4, engine=search_engine)
-        agent_trace.append(f"📚 [AGENT STEP 2.1] Retrieved {len(context_evidence)} initial evidence passages for fact grounding.")
+        context_evidence = get_rag_evidence(search_q, max_results=4, engine=search_engine)
+        agent_trace.append(f"📚 [RAG STEP 2.1] Retrieved {len(context_evidence)} trusted RAG evidence passages with semantic ranking.")
         
         # Step 3: Grounded Answer Generation
-        agent_trace.append("🤖 [AGENT STEP 3] Synthesizing fact-grounded response using retrieved evidence...")
+        agent_trace.append("🤖 [RAG STEP 3] Synthesizing response grounded strictly in retrieved RAG context...")
         initial_text = generate_grounded_response(prompt_or_text, context_evidence)
     else:
         initial_text = prompt_or_text
-        agent_trace.append("📄 [AGENT STEP 3] Using provided input text as target document.")
+        context_evidence = get_rag_evidence(prompt_or_text[:100], max_results=4, engine=search_engine)
+        agent_trace.append("📄 [RAG STEP 3] Using provided input document + RAG knowledge store for verification.")
 
     # Step 4: Atomic Claim Extraction & Coreference Resolution
     agent_trace.append("✂️ [AGENT STEP 4] Decomposing text into atomic factual claims with coreference resolution...")
@@ -306,14 +300,15 @@ def run_autonomous_agent(prompt_or_text: str, input_type: str = "prompt", search
             "risk_level": "LOW",
             "highlighted_html": initial_text,
             "corrected_text": initial_text,
-            "agent_trace": agent_trace
+            "agent_trace": agent_trace,
+            "rag_evidence": context_evidence
         }
         if save_to_db:
             storage.save_verification_run(report, source_type=input_type, prompt=prompt_or_text if input_type == "prompt" else None, model_used=model_name)
         return report
 
     # Step 5: Multi-Source Claim Verification
-    agent_trace.append(f"⚡ [AGENT STEP 5] Running parallel verification on {len(claims)} claims...")
+    agent_trace.append(f"⚡ [AGENT STEP 5] Running parallel verification on {len(claims)} claims against RAG evidence...")
     tasks = [(c, search_engine) for c in claims]
     with ThreadPoolExecutor(max_workers=min(len(claims), 5)) as executor:
         results = list(executor.map(process_single_claim, tasks))
@@ -336,8 +331,8 @@ def run_autonomous_agent(prompt_or_text: str, input_type: str = "prompt", search
         agent_trace.append("🔄 [AGENT STEP 6] Hallucinations detected! Triggering Agentic Self-Correction Loop...")
         for r in results:
             if r["verdict"] == "HALLUCINATED":
-                agent_trace.append(f"🚨 [AGENT RE-SEARCH] Re-querying evidence for false claim: '{r['claim']}'...")
-                re_evidence = get_hybrid_evidence(r["claim"], max_results=3, engine="hybrid")
+                agent_trace.append(f"🚨 [AGENT RE-SEARCH] Re-querying RAG evidence for false claim: '{r['claim']}'...")
+                re_evidence = get_rag_evidence(r["claim"], max_results=3, engine="hybrid")
                 if re_evidence:
                     re_eval = verify_claim(r["claim"], re_evidence)
                     if re_eval.get("explanation"):
@@ -374,7 +369,8 @@ def run_autonomous_agent(prompt_or_text: str, input_type: str = "prompt", search
         "risk_level": risk_level,
         "highlighted_html": highlighted_html,
         "corrected_text": verified_answer,
-        "agent_trace": agent_trace
+        "agent_trace": agent_trace,
+        "rag_evidence": context_evidence
     }
 
     if save_to_db:
@@ -389,16 +385,7 @@ def run_autonomous_agent(prompt_or_text: str, input_type: str = "prompt", search
     return report
 
 def verify_text(text: str, search_engine: str = "hybrid", save_to_db: bool = True, source_type: str = "text", prompt: str = None, model_name: str = "Llama 3.3 (Groq)") -> dict:
-    """Run Autonomous Agent workflow on text."""
     return run_autonomous_agent(text, input_type="text", search_engine=search_engine, model_name=model_name, save_to_db=save_to_db)
 
 def process_prompt(prompt: str, search_engine: str = "hybrid", model_name: str = "Llama 3.3 (Groq)") -> dict:
-    """Run Autonomous Agent workflow on prompt."""
     return run_autonomous_agent(prompt, input_type="prompt", search_engine=search_engine, model_name=model_name, save_to_db=True)
-
-if __name__ == "__main__":
-    sample = "Alexander Graham Bell invented the telephone. Satya Nadella is CEO of Microsoft."
-    print("Testing Upgraded Verifier Autonomous Agent...")
-    report = run_autonomous_agent(sample, input_type="text", save_to_db=False)
-    print(json.dumps(report, indent=2))
-

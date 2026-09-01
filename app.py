@@ -9,10 +9,11 @@ from datetime import datetime
 import verifier
 import storage
 import llm
+from search_engine import GLOBAL_RAG_STORE
 
 # Page Configuration
 st.set_page_config(
-    page_title="Enterprise AI Hallucination Guardrail & Analytics Engine",
+    page_title="Enterprise AI Hallucination Guardrail & RAG Engine",
     page_icon="🛡️",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -200,7 +201,7 @@ with st.sidebar:
             Guardrail Engine Active
         </div>
         <div style="color: #94A3B8; font-size: 0.78rem; margin-top: 5px; line-height: 1.4;">
-            Multi-Source Search & Real-Time Fact Verification Guardrail Operational
+            RAG Pre-Retrieval & Real-Time Fact Verification Guardrail Operational
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -215,24 +216,28 @@ with st.sidebar:
     )
     
     search_mode = st.selectbox(
-        "🔎 Evidence Retrieval Engine",
+        "📚 RAG Evidence Retrieval Engine",
         ["hybrid", "wikipedia", "web"],
-        format_func=lambda x: "🌐 Hybrid (Wiki REST + Web)" if x == "hybrid" else ("📚 Wikipedia REST API" if x == "wikipedia" else "🔎 Web Search"),
+        format_func=lambda x: "🌐 Hybrid (RAG Docs + Wiki + Web)" if x == "hybrid" else ("📚 Wikipedia REST API" if x == "wikipedia" else "🔎 Web Search"),
         index=0,
-        help="Choose multi-source evidence pre-retrieval provider."
+        help="Choose trusted evidence retrieval provider for RAG context."
     )
     
     parallel_workers = st.slider(
-        "⚡ Parallel Claim Verification Workers",
+        "⚡ Parallel Verification Workers",
         min_value=1,
         max_value=8,
         value=5,
-        help="Number of concurrent verification threads for multi-claim verification."
+        help="Number of concurrent verification threads."
     )
     
     st.markdown("---")
     
-    # Quick DB summary in sidebar
+    # Ingested Docs Summary
+    ingested_count = len(GLOBAL_RAG_STORE.documents)
+    st.markdown(f"📚 **Ingested RAG Docs:** `{ingested_count}`")
+    st.markdown(f"🧩 **Total RAG Chunks:** `{len(GLOBAL_RAG_STORE.chunks)}`")
+    
     try:
         side_stats = storage.get_analytics_stats()
         st.markdown(f"📊 **Total Audits Logged:** `{side_stats['total_runs']}`")
@@ -240,17 +245,17 @@ with st.sidebar:
     except Exception:
         pass
 
-    st.caption("🚀 **AI Hallucination Guardrail v3.0**")
+    st.caption("🚀 **AI Hallucination Guardrail v3.5 (RAG Enabled)**")
     st.caption("Enterprise Multi-Source Factual Verification Engine")
 
 # App Header
 st.markdown("""
 <div class="hero-container">
-    <div class="hero-title">🛡️ Enterprise AI Hallucination Guardrail & Analytics Engine</div>
-    <div class="hero-subtitle">Autonomous claim extraction, coreference resolution, multi-source evidence pre-retrieval, parallel verification, and factual audit logging.</div>
+    <div class="hero-title">🛡️ Enterprise AI Hallucination Guardrail & RAG Engine</div>
+    <div class="hero-subtitle">Retrieval-Augmented Generation (RAG) from trusted sources, atomic claim extraction, coreference resolution, parallel verification, and factual audit logging.</div>
     <div class="chip-container">
-        <span class="chip">🟢 Real-Time Fact Checking</span>
-        <span class="chip">⚡ Hybrid Multi-Source Search</span>
+        <span class="chip">📚 Retrieval-Augmented Generation (RAG)</span>
+        <span class="chip">🟢 Trusted Wikipedia & Doc Search</span>
         <span class="chip">🔄 Autonomous Self-Correction</span>
         <span class="chip">📊 SQLite Audit Storage</span>
         <span class="chip">🔒 Zero UI Key Exposure</span>
@@ -261,7 +266,7 @@ st.markdown("""
 # Main Navigation Tabs
 tabs = st.tabs([
     "🚀 Prompt & Real-Time Audit", 
-    "📄 Document & Batch Audit", 
+    "📄 Document & Custom RAG Audit", 
     "📊 Factual Analytics Dashboard", 
     "🧪 Model Benchmark Evaluator",
     "⚙️ Engine Diagnostics"
@@ -270,7 +275,7 @@ tabs = st.tabs([
 def render_agent_trace(report):
     trace = report.get("agent_trace", [])
     if trace:
-        with st.expander("🤖 Autonomous Agent Execution Trace (Thinking, Pre-Retrieval & Tool Actions)", expanded=False):
+        with st.expander("🤖 Autonomous Agent Execution Trace (RAG Retrieval, Thinking & Actions)", expanded=False):
             for step in trace:
                 st.markdown(f"`{step}`")
 
@@ -319,6 +324,32 @@ def render_verification_summary(report):
         
     st.divider()
 
+def render_rag_inspector(report):
+    rag_items = report.get("rag_evidence", [])
+    if rag_items:
+        with st.expander("📚 RAG Trusted Knowledge Retrieval Inspector (Semantic RAG Chunks & Attribution)", expanded=True):
+            st.markdown("Knowledge passages retrieved via **Retrieval-Augmented Generation (RAG)** from trusted sources (Wikipedia, Official Docs, Ingested Knowledge) used to ground the LLM response and verify claims:")
+            c_cols = st.columns(min(len(rag_items), 4))
+            for idx, item in enumerate(rag_items[:4]):
+                col = c_cols[idx % len(c_cols)]
+                with col:
+                    sim_score = item.get("similarity_score", 90.0)
+                    src_type = item.get("source_type", "Trusted Source")
+                    title_short = item.get('title', 'Knowledge Chunk').replace("Wikipedia: ", "")
+                    st.markdown(f"""
+                    <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 12px; padding: 14px; margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="color: #38BDF8; font-weight: 800; font-size: 0.82rem;">Rank #{idx+1}</span>
+                            <span style="background: rgba(16, 185, 129, 0.2); color: #34D399; padding: 2px 8px; border-radius: 12px; font-weight: 700; font-size: 0.78rem;">Score: {sim_score}%</span>
+                        </div>
+                        <div style="color: #A7F3D0; font-size: 0.75rem; font-weight: 600; margin-bottom: 4px;">{src_type}</div>
+                        <div style="color: #F8FAFC; font-weight: 700; font-size: 0.88rem; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{title_short}">{title_short}</div>
+                        <div style="color: #94A3B8; font-size: 0.78rem; line-height: 1.4; max-height: 75px; overflow-y: auto;">"{item.get('snippet', '')[:150]}..."</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    if item.get("url") and not str(item.get("url")).startswith("#"):
+                        st.markdown(f"🔗 [View Source Document]({item['url']})")
+
 def render_claim_results(report, filter_verdict=None):
     st.subheader("🔍 Claim-Level Verification & Evidence Attribution")
     
@@ -344,7 +375,7 @@ def render_claim_results(report, filter_verdict=None):
             st.markdown(f"**Explanation:** {res['explanation']}")
             
             if res.get("quoted_evidence") and res["quoted_evidence"] != "None":
-                st.markdown(f"**Verbatim Evidence Quote:**")
+                st.markdown(f"**Verbatim RAG Evidence Quote:**")
                 st.info(f'"{res["quoted_evidence"]}"')
                 
             if res.get("source_url"):
@@ -354,8 +385,8 @@ def render_claim_results(report, filter_verdict=None):
 # TAB 1: 🚀 PROMPT & REAL-TIME AUDIT
 # ==========================================
 with tabs[0]:
-    st.subheader("🤖 Autonomous Agent Prompt Answering & Fact Verification")
-    st.markdown("Enter any prompt or select a sample question to trigger multi-source fact-checking and autonomous correction:")
+    st.subheader("🤖 Autonomous RAG Agent Prompt Answering & Fact Verification")
+    st.markdown("Enter any prompt or select a sample question to trigger RAG evidence retrieval from trusted sources (Wikipedia, Official Docs):")
     
     # Quick Sample Pills
     st.markdown("**⚡ Quick Sample Prompts:**")
@@ -374,25 +405,26 @@ with tabs[0]:
             st.session_state.user_prompt_text = "Who discovered the law of the photoelectric effect and won the Nobel Prize for it?"
 
     user_prompt = st.text_input(
-        "Enter prompt for Autonomous Fact-Checking Agent:", 
+        "Enter prompt for RAG Fact-Checking Agent:", 
         value=st.session_state.user_prompt_text,
         placeholder="e.g. Who is the CEO of Microsoft and when was the company founded?"
     )
     
     col_btn1, col_btn2 = st.columns([1, 4])
     with col_btn1:
-        btn_gen = st.button("🚀 Execute Guardrail", type="primary", use_container_width=True)
+        btn_gen = st.button("🚀 Execute RAG Guardrail", type="primary", use_container_width=True)
         
     if btn_gen or (user_prompt and st.session_state.get("trigger_run", False)):
         if not user_prompt.strip():
             st.warning("Please enter a prompt to execute.")
         else:
-            with st.spinner("🤖 Autonomous Agent analyzing prompt, retrieving evidence & verifying claims..."):
+            with st.spinner("🤖 RAG Agent retrieving trusted evidence, synthesizing answer & verifying claims..."):
                 try:
                     report = verifier.process_prompt(user_prompt, search_engine=search_mode, model_name=model_choice)
                     
                     render_agent_trace(report)
                     render_verification_summary(report)
+                    render_rag_inspector(report)
                     
                     sub_tab1, sub_tab2 = st.tabs(["✨ Fact-Grounded Verified Answer", "🔍 Highlighted Factual Analysis"])
                     with sub_tab1:
@@ -405,11 +437,31 @@ with tabs[0]:
                     st.error(f"Error executing guardrail request: {e}")
 
 # ==========================================
-# TAB 2: 📄 DOCUMENT & BATCH AUDIT
+# TAB 2: 📄 DOCUMENT & CUSTOM RAG AUDIT
 # ==========================================
 with tabs[1]:
-    st.subheader("Audit Factual Claims in Text or Uploaded Files")
+    st.subheader("Audit Factual Claims against Custom Trusted Knowledge Documents (RAG)")
     
+    # Custom RAG Document Ingestion Section
+    with st.expander("📥 Upload / Ingest Custom Trusted Documents into RAG Store", expanded=False):
+        st.markdown("Ingest custom trusted documentation (.txt, .json, .csv, .md) to create an in-memory RAG vector index:")
+        doc_name_in = st.text_input("Trusted Document Title:", value="Official Product Documentation")
+        doc_text_in = st.text_area("Paste Trusted Document Content:", height=140, placeholder="Paste official reference documentation here...")
+        
+        c_ing1, c_ing2 = st.columns([1, 3])
+        with c_ing1:
+            if st.button("⚡ Ingest into RAG Store", type="primary"):
+                if doc_text_in.strip():
+                    added = GLOBAL_RAG_STORE.ingest_document(doc_text_in.strip(), doc_name=doc_name_in.strip())
+                    st.success(f"Successfully indexed **{added}** semantic RAG chunks into trusted knowledge store!")
+                else:
+                    st.warning("Please paste document content to ingest.")
+        with c_ing2:
+            if st.button("🗑️ Clear Ingested RAG Documents"):
+                GLOBAL_RAG_STORE.clear()
+                st.info("Cleared all custom ingested RAG documents.")
+
+    st.markdown("---")
     audit_mode = st.radio("Choose Audit Input Mode", ["Single Text Block", "Batch File Upload (.txt, .json, .csv)", "Load Preset Sample Document"], horizontal=True)
     
     if audit_mode == "Single Text Block":
@@ -425,11 +477,12 @@ with tabs[1]:
             if not text_input.strip():
                 st.warning("Please paste text to audit.")
             else:
-                with st.spinner("🤖 Agent extracting atomic claims & verifying multi-source evidence..."):
+                with st.spinner("🤖 Agent extracting atomic claims & verifying against RAG evidence..."):
                     try:
                         report = verifier.verify_text(text_input, search_engine=search_mode, model_name=model_choice, source_type="text")
                         render_agent_trace(report)
                         render_verification_summary(report)
+                        render_rag_inspector(report)
                         
                         st.subheader("🤖 Agent Verified Corrected Version")
                         st.success(report.get("verified_answer", report.get("corrected_text", report.get("text"))))
@@ -451,6 +504,7 @@ with tabs[1]:
                 with st.spinner("Running batch verification pipeline..."):
                     report = verifier.verify_text(content, search_engine=search_mode, model_name=model_choice, source_type="file")
                     render_verification_summary(report)
+                    render_rag_inspector(report)
                     render_claim_results(report)
                     
                     report_bytes = json.dumps(report, indent=2).encode('utf-8')
@@ -481,6 +535,7 @@ with tabs[1]:
             with st.spinner("Auditing preset document..."):
                 report = verifier.verify_text(selected_text, search_engine=search_mode, model_name=model_choice, source_type="preset")
                 render_verification_summary(report)
+                render_rag_inspector(report)
                 render_claim_results(report)
 
 # ==========================================
@@ -494,7 +549,6 @@ with tabs[2]:
     if stats["total_runs"] == 0:
         st.info("No audit logs recorded yet. Run prompts or text audits in Tab 1 & Tab 2 to generate analytics!")
     else:
-        # Top Metrics
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Total Audits Run", stats["total_runs"])
         c2.metric("Total Claims Verified", stats["total_claims"])
@@ -602,9 +656,9 @@ with tabs[4]:
     with d1:
         st.markdown("""
         <div class="metric-card">
-            <div class="metric-title">Search Engine</div>
-            <div class="metric-val" style="color: #34D399; font-size: 1.2rem;">Hybrid Active</div>
-            <div style="color: #94A3B8; font-size: 0.78rem; margin-top: 4px;">Wiki REST + Web</div>
+            <div class="metric-title">RAG Engine</div>
+            <div class="metric-val" style="color: #34D399; font-size: 1.2rem;">RAG Active</div>
+            <div style="color: #94A3B8; font-size: 0.78rem; margin-top: 4px;">Semantic Chunks + Wiki</div>
         </div>
         """, unsafe_allow_html=True)
     with d2:
