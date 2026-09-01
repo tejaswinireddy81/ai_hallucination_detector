@@ -19,7 +19,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom High-End Dark & Glassmorphism Styling
+# High-Readability Enterprise Styling
 st.markdown("""
 <style>
     /* Main Background & Base Typography */
@@ -31,16 +31,16 @@ st.markdown("""
     
     /* Header Container */
     .hero-container {
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.85));
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.95));
+        border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 16px;
         padding: 24px 30px;
         margin-bottom: 24px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         backdrop-filter: blur(12px);
     }
     .hero-title {
-        font-size: 2.1rem;
+        font-size: 2.2rem;
         font-weight: 800;
         background: linear-gradient(90deg, #38BDF8, #818CF8, #C084FC);
         -webkit-background-clip: text;
@@ -48,9 +48,10 @@ st.markdown("""
         margin-bottom: 8px;
     }
     .hero-subtitle {
-        color: #94A3B8;
-        font-size: 1.05rem;
+        color: #CBD5E1;
+        font-size: 1.08rem;
         margin-bottom: 14px;
+        line-height: 1.5;
     }
     .chip-container {
         display: flex;
@@ -58,83 +59,150 @@ st.markdown("""
         flex-wrap: wrap;
     }
     .chip {
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        padding: 5px 12px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        padding: 6px 14px;
         border-radius: 20px;
-        font-size: 0.8rem;
+        font-size: 0.82rem;
         font-weight: 600;
-        color: #CBD5E1;
+        color: #E2E8F0;
     }
 
-    /* Metric Cards */
+    /* High-Readability Metric Cards */
     .metric-card {
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.75));
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.75), rgba(15, 23, 42, 0.9));
+        border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 14px;
-        padding: 20px;
+        padding: 18px;
         text-align: center;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
         backdrop-filter: blur(8px);
         transition: transform 0.2s ease, border-color 0.2s ease;
     }
     .metric-card:hover {
         transform: translateY(-2px);
-        border-color: rgba(99, 102, 241, 0.4);
+        border-color: rgba(99, 102, 241, 0.5);
     }
     .metric-title {
         color: #94A3B8;
-        font-size: 0.82rem;
-        font-weight: 600;
+        font-size: 0.85rem;
+        font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.06em;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
     }
     .metric-val {
-        color: #F8FAFC;
-        font-size: 1.85rem;
+        color: #FFFFFF;
+        font-size: 2rem;
         font-weight: 800;
+    }
+
+    /* High-Contrast Claim Cards */
+    .claim-card-supported {
+        background: linear-gradient(135deg, rgba(6, 78, 59, 0.25), rgba(15, 23, 42, 0.8));
+        border-left: 6px solid #10B981;
+        border-top: 1px solid rgba(16, 185, 129, 0.2);
+        border-right: 1px solid rgba(16, 185, 129, 0.2);
+        border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .claim-card-hallucinated {
+        background: linear-gradient(135deg, rgba(127, 29, 29, 0.25), rgba(15, 23, 42, 0.8));
+        border-left: 6px solid #EF4444;
+        border-top: 1px solid rgba(239, 68, 68, 0.2);
+        border-right: 1px solid rgba(239, 68, 68, 0.2);
+        border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .claim-card-uncertain {
+        background: linear-gradient(135deg, rgba(120, 53, 15, 0.25), rgba(15, 23, 42, 0.8));
+        border-left: 6px solid #F59E0B;
+        border-top: 1px solid rgba(245, 158, 11, 0.2);
+        border-right: 1px solid rgba(245, 158, 11, 0.2);
+        border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .claim-header {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #FFFFFF;
+        margin-bottom: 10px;
+    }
+    .claim-meta {
+        font-size: 0.88rem;
+        color: #CBD5E1;
+        margin-bottom: 10px;
+    }
+    .claim-explanation {
+        background: rgba(15, 23, 42, 0.6);
+        border-radius: 8px;
+        padding: 12px 16px;
+        color: #E2E8F0;
+        font-size: 0.98rem;
+        line-height: 1.6;
+        margin-bottom: 10px;
+    }
+    .claim-quote {
+        background: rgba(30, 41, 59, 0.7);
+        border-left: 3px solid #38BDF8;
+        border-radius: 6px;
+        padding: 10px 14px;
+        color: #93C5FD;
+        font-size: 0.93rem;
+        font-style: italic;
+        margin-bottom: 10px;
     }
 
     /* Badges */
     .badge-supported {
-        background-color: rgba(6, 78, 59, 0.8);
+        background-color: #064E3B;
         color: #34D399;
-        padding: 4px 12px;
+        padding: 5px 14px;
         border-radius: 20px;
         font-weight: 700;
         font-size: 0.85rem;
         border: 1px solid #059669;
     }
     .badge-hallucinated {
-        background-color: rgba(127, 29, 29, 0.8);
+        background-color: #7F1D1D;
         color: #FCA5A5;
-        padding: 4px 12px;
+        padding: 5px 14px;
         border-radius: 20px;
         font-weight: 700;
         font-size: 0.85rem;
         border: 1px solid #DC2626;
     }
     .badge-uncertain {
-        background-color: rgba(120, 53, 15, 0.8);
+        background-color: #78350F;
         color: #FCD34D;
-        padding: 4px 12px;
+        padding: 5px 14px;
         border-radius: 20px;
         font-weight: 700;
         font-size: 0.85rem;
         border: 1px solid #D97706;
     }
 
-    /* Glass Content Container */
-    .glass-box {
-        background: rgba(30, 41, 59, 0.45);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 22px;
-        margin-bottom: 20px;
+    /* Glass Answer Box */
+    .glass-answer-box {
+        background: linear-gradient(135deg, rgba(6, 78, 59, 0.2), rgba(15, 23, 42, 0.85));
+        border: 1px solid rgba(16, 185, 129, 0.4);
+        border-radius: 14px;
+        padding: 24px;
+        margin-bottom: 24px;
         color: #F8FAFC;
-        font-size: 1.05rem;
-        line-height: 1.7;
+        font-size: 1.15rem;
+        line-height: 1.8;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
     }
     
     /* Sidebar Status Box */
@@ -165,20 +233,22 @@ st.markdown("""
     /* Custom Tab Styling */
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px;
-        background-color: rgba(15, 23, 42, 0.6);
+        background-color: rgba(15, 23, 42, 0.7);
         padding: 8px;
         border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
     .stTabs [data-baseweb="tab"] {
         border-radius: 8px;
         color: #94A3B8;
         font-weight: 600;
-        padding: 8px 18px;
+        padding: 10px 20px;
+        font-size: 0.95rem;
     }
     .stTabs [aria-selected="true"] {
         background: linear-gradient(135deg, #4F46E5, #3B82F6) !important;
         color: #FFFFFF !important;
+        font-weight: 700 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -201,7 +271,7 @@ with st.sidebar:
             Guardrail Engine Active
         </div>
         <div style="color: #94A3B8; font-size: 0.78rem; margin-top: 5px; line-height: 1.4;">
-            RAG Pre-Retrieval & Real-Time Fact Verification Guardrail Operational
+            RAG Pre-Retrieval & Real-Time Fact Verification Operational
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -233,7 +303,6 @@ with st.sidebar:
     
     st.markdown("---")
     
-    # Ingested Docs Summary
     ingested_count = len(GLOBAL_RAG_STORE.documents)
     st.markdown(f"📚 **Ingested RAG Docs:** `{ingested_count}`")
     st.markdown(f"🧩 **Total RAG Chunks:** `{len(GLOBAL_RAG_STORE.chunks)}`")
@@ -275,7 +344,7 @@ tabs = st.tabs([
 def render_agent_trace(report):
     trace = report.get("agent_trace", [])
     if trace:
-        with st.expander("🤖 Autonomous Agent Execution Trace (RAG Retrieval, Thinking & Actions)", expanded=False):
+        with st.expander("🤖 Autonomous Agent Execution Trace (RAG Retrieval & Step Log)", expanded=False):
             for step in trace:
                 st.markdown(f"`{step}`")
 
@@ -327,31 +396,33 @@ def render_verification_summary(report):
 def render_rag_inspector(report):
     rag_items = report.get("rag_evidence", [])
     if rag_items:
-        with st.expander("📚 RAG Trusted Knowledge Retrieval Inspector (Semantic RAG Chunks & Attribution)", expanded=True):
-            st.markdown("Knowledge passages retrieved via **Retrieval-Augmented Generation (RAG)** from trusted sources (Wikipedia, Official Docs, Ingested Knowledge) used to ground the LLM response and verify claims:")
-            c_cols = st.columns(min(len(rag_items), 4))
-            for idx, item in enumerate(rag_items[:4]):
-                col = c_cols[idx % len(c_cols)]
-                with col:
-                    sim_score = item.get("similarity_score", 90.0)
-                    src_type = item.get("source_type", "Trusted Source")
-                    title_short = item.get('title', 'Knowledge Chunk').replace("Wikipedia: ", "")
-                    st.markdown(f"""
-                    <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 12px; padding: 14px; margin-bottom: 10px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                            <span style="color: #38BDF8; font-weight: 800; font-size: 0.82rem;">Rank #{idx+1}</span>
-                            <span style="background: rgba(16, 185, 129, 0.2); color: #34D399; padding: 2px 8px; border-radius: 12px; font-weight: 700; font-size: 0.78rem;">Score: {sim_score}%</span>
-                        </div>
-                        <div style="color: #A7F3D0; font-size: 0.75rem; font-weight: 600; margin-bottom: 4px;">{src_type}</div>
-                        <div style="color: #F8FAFC; font-weight: 700; font-size: 0.88rem; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{title_short}">{title_short}</div>
-                        <div style="color: #94A3B8; font-size: 0.78rem; line-height: 1.4; max-height: 75px; overflow-y: auto;">"{item.get('snippet', '')[:150]}..."</div>
+        st.markdown("### 📚 RAG Trusted Knowledge Sources & Context Inspector")
+        st.markdown("Top evidence passages retrieved via **Retrieval-Augmented Generation (RAG)** used to ground the response:")
+        
+        c_cols = st.columns(min(len(rag_items), 4))
+        for idx, item in enumerate(rag_items[:4]):
+            col = c_cols[idx % len(c_cols)]
+            with col:
+                sim_score = item.get("similarity_score", 90.0)
+                src_type = item.get("source_type", "Trusted Source")
+                title_short = item.get('title', 'Knowledge Chunk').replace("Wikipedia: ", "")
+                st.markdown(f"""
+                <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 16px; margin-bottom: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span style="color: #38BDF8; font-weight: 800; font-size: 0.85rem;">Rank #{idx+1}</span>
+                        <span style="background: rgba(16, 185, 129, 0.25); color: #34D399; padding: 3px 10px; border-radius: 12px; font-weight: 700; font-size: 0.8rem; border: 1px solid #059669;">Score: {sim_score}%</span>
                     </div>
-                    """, unsafe_allow_html=True)
-                    if item.get("url") and not str(item.get("url")).startswith("#"):
-                        st.markdown(f"🔗 [View Source Document]({item['url']})")
+                    <div style="color: #6EE7B7; font-size: 0.78rem; font-weight: 700; margin-bottom: 6px;">{src_type}</div>
+                    <div style="color: #FFFFFF; font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{title_short}">{title_short}</div>
+                    <div style="color: #CBD5E1; font-size: 0.82rem; line-height: 1.5; max-height: 90px; overflow-y: auto;">"{item.get('snippet', '')[:160]}..."</div>
+                </div>
+                """, unsafe_allow_html=True)
+                if item.get("url") and not str(item.get("url")).startswith("#"):
+                    st.markdown(f"🔗 [View Source Document]({item['url']})")
+        st.divider()
 
 def render_claim_results(report, filter_verdict=None):
-    st.subheader("🔍 Claim-Level Verification & Evidence Attribution")
+    st.markdown("### 🔍 Claim-Level Factual Audit & Evidence Attribution")
     
     results = report.get("results", [])
     if filter_verdict and filter_verdict != "ALL":
@@ -364,22 +435,33 @@ def render_claim_results(report, filter_verdict=None):
     for i, res in enumerate(results, 1):
         verdict = res["verdict"]
         if verdict == "SUPPORTED":
+            card_class = "claim-card-supported"
             badge = '<span class="badge-supported">🟢 SUPPORTED</span>'
         elif verdict == "HALLUCINATED":
+            card_class = "claim-card-hallucinated"
             badge = '<span class="badge-hallucinated">🔴 HALLUCINATED</span>'
         else:
+            card_class = "claim-card-uncertain"
             badge = '<span class="badge-uncertain">🟡 UNCERTAIN</span>'
             
-        with st.expander(f"Claim #{i}: {res['claim']}", expanded=(verdict == "HALLUCINATED")):
-            st.markdown(f"**Verdict:** {badge} | **Confidence:** `{res['confidence']}` | **Search Query:** `{res.get('search_query', 'N/A')}`", unsafe_allow_html=True)
-            st.markdown(f"**Explanation:** {res['explanation']}")
-            
-            if res.get("quoted_evidence") and res["quoted_evidence"] != "None":
-                st.markdown(f"**Verbatim RAG Evidence Quote:**")
-                st.info(f'"{res["quoted_evidence"]}"')
-                
-            if res.get("source_url"):
-                st.markdown(f"🔗 **Evidence Source:** [{res.get('source_title', 'View Article')}]({res['source_url']})")
+        st.markdown(f"""
+        <div class="{card_class}">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="color: #94A3B8; font-weight: 700; font-size: 0.85rem; uppercase;">Atomic Claim #{i}</span>
+                <div>{badge}</div>
+            </div>
+            <div class="claim-header">"{res['claim']}"</div>
+            <div class="claim-meta">
+                <b>Confidence:</b> <code style="color: #38BDF8;">{res['confidence']}</code> &nbsp;|&nbsp; 
+                <b>Target Search Query:</b> <code style="color: #C084FC;">{res.get('search_query', 'N/A')}</code>
+            </div>
+            <div class="claim-explanation">
+                <b>💬 Factual Explanation:</b> {res['explanation']}
+            </div>
+            {f'<div class="claim-quote"><b>📖 Verbatim RAG Quote:</b> "{res["quoted_evidence"]}"</div>' if res.get("quoted_evidence") and res["quoted_evidence"] != "None" else ''}
+            {f'<div style="margin-top: 8px;">🔗 <b>Source:</b> <a href="{res["source_url"]}" target="_blank" style="color: #38BDF8; font-weight: 600;">{res.get("source_title", "View Article")}</a></div>' if res.get("source_url") else ''}
+        </div>
+        """, unsafe_allow_html=True)
 
 # ==========================================
 # TAB 1: 🚀 PROMPT & REAL-TIME AUDIT
@@ -424,14 +506,21 @@ with tabs[0]:
                     
                     render_agent_trace(report)
                     render_verification_summary(report)
-                    render_rag_inspector(report)
                     
-                    sub_tab1, sub_tab2 = st.tabs(["✨ Fact-Grounded Verified Answer", "🔍 Highlighted Factual Analysis"])
-                    with sub_tab1:
-                        st.success(report.get("verified_answer", report.get("corrected_text", report.get("text"))))
-                    with sub_tab2:
+                    st.markdown("### ✨ Grounded & Verified Output")
+                    st.markdown(f"""
+                    <div class="glass-answer-box">
+                        <div style="color: #34D399; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; margin-bottom: 8px;">
+                            🟢 Fact-Grounded Verified Answer
+                        </div>
+                        {report.get("verified_answer", report.get("corrected_text", report.get("text")))}
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    with st.expander("🔍 View Highlighted Initial Response Analysis", expanded=False):
                         st.markdown(f'<div class="glass-box">{report.get("highlighted_html", report.get("text"))}</div>', unsafe_allow_html=True)
                     
+                    render_rag_inspector(report)
                     render_claim_results(report)
                 except Exception as e:
                     st.error(f"Error executing guardrail request: {e}")
@@ -482,14 +571,21 @@ with tabs[1]:
                         report = verifier.verify_text(text_input, search_engine=search_mode, model_name=model_choice, source_type="text")
                         render_agent_trace(report)
                         render_verification_summary(report)
+                        
+                        st.markdown("### ✨ Grounded & Verified Output")
+                        st.markdown(f"""
+                        <div class="glass-answer-box">
+                            <div style="color: #34D399; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; margin-bottom: 8px;">
+                                🟢 Agent Verified Corrected Version
+                            </div>
+                            {report.get("verified_answer", report.get("corrected_text", report.get("text")))}
+                        </div>
+                        """, unsafe_allow_html=True)
+                        
+                        with st.expander("🔍 View Highlighted Factual Analysis", expanded=False):
+                            st.markdown(f'<div class="glass-box">{report.get("highlighted_html", report.get("text"))}</div>', unsafe_allow_html=True)
+                        
                         render_rag_inspector(report)
-                        
-                        st.subheader("🤖 Agent Verified Corrected Version")
-                        st.success(report.get("verified_answer", report.get("corrected_text", report.get("text"))))
-                        
-                        st.subheader("Highlighted Factual Analysis")
-                        st.markdown(f'<div class="glass-box">{report.get("highlighted_html", report.get("text"))}</div>', unsafe_allow_html=True)
-                        
                         render_claim_results(report, filter_verdict=filter_choice)
                     except Exception as e:
                         st.error(f"Error auditing text: {e}")
